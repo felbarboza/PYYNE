@@ -2,7 +2,7 @@ import { injectable, injectAll } from 'tsyringe';
 import { InjectionTypes } from '../../../../shared/container/injectionTypes';
 import { BaseBankAdapter } from '../adapters/BaseAdapter';
 import { AccountBalance } from '../dtos/AccountBalance.dto';
-import { Transaction } from '../dtos/Transaction.dto';
+import { BankTransaction, Transaction } from '../dtos/Transaction.dto';
 import { InvalidAccountIdException } from '../exceptions/InvalidAccountIdExpection';
 import { InvalidDateException } from '../exceptions/InvalidDateExpection';
 import { IBaseBankService } from './BaseBankService';
@@ -18,7 +18,7 @@ export class BankService implements IBaseBankService {
     accountId: number,
     fromDate: Date,
     toDate: Date,
-  ): Transaction[] {
+  ): BankTransaction[] {
     if (!accountId) {
       throw new InvalidAccountIdException();
     }
@@ -26,7 +26,7 @@ export class BankService implements IBaseBankService {
       throw new InvalidDateException();
     }
 
-    const transactions: Transaction[] = [];
+    const transactions: BankTransaction[] = [];
 
     this.availableBanks.forEach((bankAdapter: BaseBankAdapter) => {
       const bankTransactions = bankAdapter.getTransactions(
@@ -34,7 +34,7 @@ export class BankService implements IBaseBankService {
         fromDate,
         toDate,
       );
-      transactions.push(...bankTransactions);
+      transactions.push(bankTransactions);
     });
 
     return transactions;

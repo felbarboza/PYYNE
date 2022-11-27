@@ -6,8 +6,8 @@ import { BankService } from '../../services/BankService';
 import { IBaseBankService } from '../../services/BaseBankService';
 import { FakeBankAdapter } from '../fakes/FakeBankAdapter';
 
-const fakeBank1Adapter = new FakeBankAdapter();
-const fakeBank2Adapter = new FakeBankAdapter();
+const fakeBank1Adapter = new FakeBankAdapter('Bank1');
+const fakeBank2Adapter = new FakeBankAdapter('Bank2');
 const bank1Transactions = [
   {
     amount: 123,
@@ -54,7 +54,16 @@ describe('BankService', () => {
   });
 
   it('Should be able to fetch all transactions on all banks', () => {
-    const allTransactions = [...bank1Transactions, ...bank2Transactions];
+    const expectedTransactions = [
+      {
+        bankName: 'Bank1',
+        transactions: bank1Transactions,
+      },
+      {
+        bankName: 'Bank2',
+        transactions: bank2Transactions,
+      },
+    ];
 
     const transactions = bankService.getAllTransactions(
       fakeAccountId,
@@ -62,7 +71,7 @@ describe('BankService', () => {
       fakeDate,
     );
 
-    expect(transactions).toStrictEqual(allTransactions);
+    expect(transactions).toStrictEqual(expectedTransactions);
   });
 
   it('Should be able to fetch all balances on all banks', () => {

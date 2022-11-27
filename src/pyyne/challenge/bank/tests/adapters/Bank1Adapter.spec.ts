@@ -32,6 +32,7 @@ describe('Bank1Adapter', () => {
     const balance = bank1Adapter.getBalance(123);
 
     expect(balance).toStrictEqual({
+      bankName: 'Bank1',
       balance: expectedAccountBalance,
       currency: expectedCurrency,
     });
@@ -64,13 +65,16 @@ describe('Bank1Adapter', () => {
       new Date(),
     );
 
-    expect(transactions).toStrictEqual([
-      {
-        amount: expectedTransactionAmount,
-        type: expectedTransactionType,
-        text: expectedTransactionText,
-      },
-    ]);
+    expect(transactions).toStrictEqual({
+      bankName: 'Bank1',
+      transactions: [
+        {
+          amount: expectedTransactionAmount,
+          type: expectedTransactionType,
+          text: expectedTransactionText,
+        },
+      ],
+    });
   });
 
   it('Should not be able to retrieve balance from a non numerical accountId', () => {

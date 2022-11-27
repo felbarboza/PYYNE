@@ -1,13 +1,16 @@
 import { BaseBankAdapter } from '../../adapters/BaseAdapter';
 import { AccountBalance } from '../../dtos/AccountBalance.dto';
-import { Transaction } from '../../dtos/Transaction.dto';
+import { BankTransaction, Transaction } from '../../dtos/Transaction.dto';
 
 export class FakeBankAdapter implements BaseBankAdapter {
   balance: AccountBalance;
   transactions: Transaction[];
+  name: string;
 
-  constructor() {
+  constructor(bankName: string) {
+    this.name = bankName;
     this.balance = {
+      bankName: this.name,
       balance: 0,
       currency: 'USD',
     };
@@ -20,6 +23,7 @@ export class FakeBankAdapter implements BaseBankAdapter {
 
   public setBalance(balance: number, currency: string): void {
     this.balance = {
+      bankName: this.name,
       balance,
       currency,
     };
@@ -29,8 +33,8 @@ export class FakeBankAdapter implements BaseBankAdapter {
     _accountId: number,
     _fromDate: Date,
     _toDate: Date,
-  ): Transaction[] {
-    return this.transactions;
+  ): BankTransaction {
+    return { bankName: this.name, transactions: this.transactions };
   }
 
   public setTransactions(transactions: Transaction[]) {

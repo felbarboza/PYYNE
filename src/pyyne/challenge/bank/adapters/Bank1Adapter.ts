@@ -1,6 +1,6 @@
 import { AccountBalance } from '../dtos/AccountBalance.dto';
 import { InternTransactionType } from '../dtos/InternTransactionType.dto';
-import { Transaction } from '../dtos/Transaction.dto';
+import { BankTransaction, Transaction } from '../dtos/Transaction.dto';
 import { InvalidTransactionTypeException } from '../exceptions/InvalidTransactionTypeException';
 import { BaseBankAdapter } from './BaseAdapter';
 import { InvalidDateException } from '../exceptions/InvalidDateExpection';
@@ -10,6 +10,7 @@ import { Bank1Transaction } from '../../../../bank1/integration/Bank1Transaction
 
 export class Bank1Adapter implements BaseBankAdapter {
   private bank1AccountSource: Bank1AccountSource;
+  private name = 'Bank1';
 
   constructor() {
     this.bank1AccountSource = new Bank1AccountSource();
@@ -24,6 +25,7 @@ export class Bank1Adapter implements BaseBankAdapter {
     const currency = this.bank1AccountSource.getAccountCurrency(accountId);
 
     return {
+      bankName: this.name,
       balance,
       currency,
     };
@@ -33,7 +35,7 @@ export class Bank1Adapter implements BaseBankAdapter {
     accountId: number,
     fromDate: Date,
     toDate: Date,
-  ): Transaction[] {
+  ): BankTransaction {
     if (!accountId) {
       throw new InvalidAccountIdException();
     }
@@ -49,7 +51,7 @@ export class Bank1Adapter implements BaseBankAdapter {
 
     const convertedTransactions = this.convertTransactions(bank1Transactions);
 
-    return convertedTransactions;
+    return { bankName: this.name, transactions: convertedTransactions };
   }
 
   private convertTransactions(

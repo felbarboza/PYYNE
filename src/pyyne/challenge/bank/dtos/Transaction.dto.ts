@@ -5,3 +5,8 @@ export interface Transaction {
   type: InternTransactionType;
   text: string;
 }
+
+export interface BankTransaction {
+  bankName: string;
+  transactions: Transaction[];
+}
